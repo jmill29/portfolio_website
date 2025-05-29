@@ -1,0 +1,225 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+header {
+    background-color: #151515;
+    color: white;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+    height: 10%;
+}
+
+main {
+    position: absolute;
+    top: 10%;
+    left: 0px;
+    width: 100%;
+    height: 90%;
+}
+
+h1 {
+    font-family: 'Dancing Script';
+    font-weight: 700;
+    text-align: center;
+}
+
+header h1 {
+    margin: 15px 0px;
+    margin-right: 30px;
+    font-size: 2.5vw;
+}
+
+nav {
+    margin-right: 15px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+nav .link {
+    margin-right: 20px;
+    margin-left: 15px;
+    text-align: center;
+}
+
+nav .link h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: underline;
+    text-transform: uppercase;
+    padding: 5px;
+    font-size: 1.5vw;
+}
+
+#home {
+    color: skyblue;
+    cursor: default;
+}
+
+.dropdown h3 {
+    margin: 0;
+}
+
+.dropdown-content {
+    display:none;
+    position: absolute;
+    max-width: 180px;
+    z-index: 2;
+    margin-top: 0px;
+    font-size: 1.5vw;
+    background-color: #151515;
+}
+
+.dropdown {
+    cursor: default;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+    padding-top: 1%;
+}
+
+.dropdown-content a {
+    color: #111;
+    font-weight: 500;
+    display: block;
+    padding: 5px 0px;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    color: blue;
+    font-weight: bolder;
+}
+
+.home-page {
+    width: 80%;
+    height: 100%;
+    background-image: url("resources/img/home-page-background-img2.png");
+    background-size: cover;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.outer-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#title {
+    width: 100%;
+    background-color: black;
+}
+
+#title h1 {
+    font-size: 5vw;
+    color: white;
+    word-spacing: 0.7rem;
+}
+
+#dropdown-container {
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    background-color: #ddd;
+    display: grid;
+    grid-template: 2em / 1fr 1fr;
+    grid-auto-rows: 2em;
+    grid-auto-flow: row;
+    border: 1px solid blue;
+    grid-gap: 0;
+    width: 10em;
+    align-items: start;
+    align-content: center;
+    padding: 10px;
+}
+
+#title-first-line {
+    margin-top: 1px;
+    margin-bottom: 10px;
+}
+
+#title-second-line {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+#home-page-buffers {
+    height: 25%;
+    width: 100%;
+}
+
+.nav-links {
+    position: relative;
+    top: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.nav-links .hp-link {
+    border: 1px solid white;
+    margin: 10px;
+    background-color: rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.nav-links .hp-link h4 {
+    margin: 0px;
+    opacity: 0.5;
+    padding: 20px;
+    font-size: 1.5vw;
+}
+
+.nav-links .hp-link a {
+    color: white;
+}
+
+#top-hp-link {
+    margin-bottom: 20px;
+}
+
+.nav-links .hp-link:hover {
+    background-color: rgba(0,0,0,0.9);
+}
+
+.nav-links .hp-link:hover h4 {
+    opacity: 1;
+}
+
+@media only screen and (orientation: portrait) {
+    header h1 {
+        display: none;
+    }
+    header {
+        justify-content: space-around;
+    }
+    header h3 {
+        font-size: 3vw;
+    }
+    .nav-links .hp-link a {
+        font-size: 3.5vw;
+    }
+    .hp-link h4 {
+        margin: 2.5vw;
+    }
+}
+
+@media (min-device-height: 1100px) {
+    .nav-links .hp-link h4 {
+        font-size: 1.75vw;
+    }
+
+    .nav-links .hp-link {
+        margin: 20px;
+        padding: 10px 0;
+    }
+}

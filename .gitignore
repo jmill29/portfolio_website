@@ -1,0 +1,16 @@
+# Firebase credentials (never commit!)
+backend/jmill29-portfolio-firebase-adminsdk-fbsvc-ff38dbda1e.json
+
+# Environment variables
+.env
+backend/.env
+
+# Temporary/backup files
+*.un~
+*.~
+.gitignore~
+
+# Node.js dependencies and lock files
+node_modules/
+package-lock.json
+
