@@ -6,10 +6,17 @@ const getLanguages = async (format) => {
   try {
     const [results] = await db.query(query);
     let languages = format === 'set' ? new Set(): 
-    {
-      'langSet': new Set(),
-      'langMap': {}
-    };
+    (
+      format === 'multi' ?
+      {
+        'langSet': new Set(),
+        'langMap': {}
+      }: {
+        'langSet': new Set(),
+        'langMap': {},
+        'reverseLangMap': {}
+      }
+    );
 
     for (let i = 0; i < results.length; i++) {
       const id = results[i]['id'];
@@ -20,6 +27,9 @@ const getLanguages = async (format) => {
       } else {
         languages['langSet'].add(name);
         languages['langMap'][name] = Number(id);
+        if (format === 'all') {
+          languages['reverseLangMap'][Number(id)] = name;
+        }
       }
     }
     
@@ -42,7 +52,7 @@ const verifyLangInput = (langArray, langSet) => {
 };
 
 export { getLanguages, verifyLangInput };
-/* getLanguages('multi').then(langs => {
+/* getLanguages('all').then(langs => {
   const { langSet, langMap } = langs;
   console.log(langSet);
   console.log(langs);
