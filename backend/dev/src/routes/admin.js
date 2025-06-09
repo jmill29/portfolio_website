@@ -83,22 +83,32 @@ admin.put('/edit-project/:id', async (req, res) => {
     // grab project id and save as project_id
     const [ result ] = await db.query("SELECT * FROM projects WHERE id = ?", id);
 
-    /*if (result.length === 0) {
+    if (result.length === 0) {
       return res.status(404).json({ "error": `Project with id ${id} not found` });
-    }*/
+    }
 
     // make any specified edits to the project (name, description, link)
 
+    let changesToMake = {};
+    for (let key of Object.keys(req.body)) {
+      const field = req.body[key];
+      if (field !== null && field !== result[0][key]) {
+        changesToMake[key] = field;
+      }
+    }
 
+    
 
     // delete all rows from tech_stack where tech_stack.project_id = project_id
     // add all languages specified in request body to tech_stack (project_id, language_id)
 
-    // const output = Object.keys(req.body).map(key => {
-    //   return `${key}=${req.body[key]}`;
-    // });
-    // console.log(output);
-    // res.status(200).json(result);
+    const output = Object.keys(changesToMake).map(key => {
+      return `${key}=${req.body[key]}`;
+    });
+    console.log(output);
+    console.log(link === null);
+    res.status(200).json(result);
+    
   } catch (e) {
     res.status(500).json({ error: "Internal server error" });
     console.error(`Error in PUT /admin/edit-project/:id : ${e}`);
