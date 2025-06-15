@@ -61,7 +61,7 @@ admin.put('/edit-project/:id', async (req, res) => {
         (languages !== undefined && !Array.isArray(languages)) ||
         (name !== undefined && typeof name !== 'string') ||
         (description !== undefined && typeof description !== 'string') ||
-        (link != undefined && typeof link !== 'string')
+        (link !== undefined && typeof link !== 'string')
     ) {
     return res.status(400).json({
       "error": "Invalid request: 'name', 'description', and 'link' must be strings, and 'languages' must be an array of strings."
@@ -91,23 +91,20 @@ admin.put('/edit-project/:id', async (req, res) => {
 
     let changesToMake = {};
     for (let key of Object.keys(req.body)) {
-      const field = req.body[key];
-      if (field !== null && field !== result[0][key]) {
-        changesToMake[key] = field;
+      if (key !== "languages") {
+        const field = req.body[key];
+        if (field !== null && field !== result[0][key]) {
+          changesToMake[key] = field;
+        }
       }
     }
 
-    
+    const updateResult = await db.query("UPDATE projects SET ? WHERE id = ?", [changesToMake, id]);
 
     // delete all rows from tech_stack where tech_stack.project_id = project_id
     // add all languages specified in request body to tech_stack (project_id, language_id)
 
-    const output = Object.keys(changesToMake).map(key => {
-      return `${key}=${req.body[key]}`;
-    });
-    console.log(output);
-    console.log(link === null);
-    res.status(200).json(result);
+    res.status(200).json(updateResult);
     
   } catch (e) {
     res.status(500).json({ error: "Internal server error" });
