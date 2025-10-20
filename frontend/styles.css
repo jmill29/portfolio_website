@@ -12,12 +12,36 @@ h1 {
     font-size: 2vw;
 }
 
-#nav-bar a {
-    text-decoration: none;
-    color: purple;
+h2 {
+    text-align: center;
+    font-size: 3.75vw;
 }
 
 .nav-link {
     display: inline-block;
     margin: 0 1vw;
+}
+
+#nav-bar a {
+    text-decoration: none;
+    color: purple;
+}
+
+#hero-section {
+    margin: 17.5vh 0;
+}
+
+#cta {
+    width: fit-content;
+    margin: 0 auto;
+    display: flex;
+    flex-flow: column;
+}
+
+#cta button {
+    padding: 10px 20px;
+    margin: 7.5px 0;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
 }
