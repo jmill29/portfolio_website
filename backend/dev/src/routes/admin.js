@@ -1,19 +1,17 @@
 import express from 'express';
 import db from '../config/db.js';
 import { getLanguages, verifyLangInput } from '../utils/fetch-languages.js';
-// import authenticateFirebaseToken from '../middleware/authMiddleware.js';
+import authenticateFirebaseToken from '../middleware/authMiddleware.js';
 
 const admin = express.Router();
 
 // Apply auth middleware to all /admin routes
-// admin.use(authenticateFirebaseToken);
+admin.use(authenticateFirebaseToken);
 
 admin.post('/add-project', async (req, res) => {
   const { name, description, link, languages } = req.body;
 
   const { langSet, langMap } = await getLanguages('multi');
-
-  // console.log(langSet);
 
   if (!name || !link || !languages || !Array.isArray(languages) || languages.length === 0 || 
     !verifyLangInput(languages, langSet)) {
@@ -68,17 +66,6 @@ admin.put('/edit-project/:id', async (req, res) => {
     });
   }
 
-  /*
-    Current approach:
-    - When editing project languages, remove all related rows in the tech_stack table for the given project.
-    - Then, re-insert all languages specified in the request body.
-
-    BACKLOG (optimization):
-    - Only remove languages the user has deselected, and preserve existing ones that remain unchanged.
-    - Avoid deleting and re-adding all rows unnecessarily.
-  */
-
-
   try {
     // grab project id and save as project_id
     const [ result ] = await db.query("SELECT * FROM projects WHERE id = ?", id);
@@ -90,19 +77,36 @@ admin.put('/edit-project/:id', async (req, res) => {
     // make any specified edits to the project (name, description, link)
 
     let changesToMake = {};
-    for (let key of Object.keys(req.body)) {
-      if (key !== "languages") {
-        const field = req.body[key];
-        if (field !== null && field !== result[0][key]) {
-          changesToMake[key] = field;
-        }
+    let keysToChange = Object.keys(req.body).filter(key => 
+      key !== "languages" && req.body[key] !== undefined &&
+        req.body[key] !== null && (typeof req.body[key] === 'string'
+        && req.body[key].trim() !== ''));
+    for (let key of keysToChange) {
+      const field = req.body[key];
+      if (field !== null && field !== result[0][key]) {
+        changesToMake[key] = field;
       }
     }
 
     const updateResult = await db.query("UPDATE projects SET ? WHERE id = ?", [changesToMake, id]);
 
-    // delete all rows from tech_stack where tech_stack.project_id = project_id
-    // add all languages specified in request body to tech_stack (project_id, language_id)
+    // make necessary changes to the tech_stack table by checking which languages are currently in the project and which ones are being added/removed
+    if (languages !== undefined) {
+      const [currentLangs] = await db.query("SELECT language_id FROM tech_stack WHERE project_id = ?", id);
+      const currentLangSet = new Set(currentLangs.map(l => l.language_id));
+      const newLangSet = new Set(languages.map(l => langMap[l]));
+
+      // find languages to add
+      const langsToAdd = [...newLangSet].filter(l => !currentLangSet.has(l));
+      // find languages to remove
+      const langsToRemove = [...currentLangSet].filter(l => !newLangSet.has(l));
+
+      // perform add/remove operations
+      await Promise.all([
+        ...langsToAdd.map(langId => db.query("INSERT INTO tech_stack (project_id, language_id) VALUES (?, ?)", [id, langId])),
+        ...langsToRemove.map(langId => db.query("DELETE FROM tech_stack WHERE project_id = ? AND language_id = ?", [id, langId]))
+      ]);
+    }
 
     res.status(200).json(updateResult);
     
@@ -110,16 +114,6 @@ admin.put('/edit-project/:id', async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
     console.error(`Error in PUT /admin/edit-project/:id : ${e}`);
   }
-
-  
-
-  // Update the project with id (= route param)
-
-  /*
-    IF updating language array:
-      retrieve current language array using id route param
-      loop through new language array and make necessary changes to tech_stack table
-  */
   
 });
 
