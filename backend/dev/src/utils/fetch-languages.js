@@ -52,8 +52,3 @@ const verifyLangInput = (langArray, langSet) => {
 };
 
 export { getLanguages, verifyLangInput };
-/* getLanguages('all').then(langs => {
-  const { langSet, langMap } = langs;
-  console.log(langSet);
-  console.log(langs);
-}); */
